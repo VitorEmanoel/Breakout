@@ -1,3 +1,8 @@
+/*
+Criado por VitorEmanoel
+*/
+
+//Evento de Captura de teclas.
 document.addEventListener('keydown', function(evento){
   var key = evento.keyCode;
   if(key == 39 && game){
@@ -8,6 +13,7 @@ document.addEventListener('keydown', function(evento){
 });
 
 
+//Variaveis
 var tFrame = 900;
 var frameDiv;
 var points = new Array(78);
@@ -24,6 +30,8 @@ var ballOffsetLeft;
 var gameover;
 var game;
 
+
+//Função de inicialização
 function inicializar(){
   ball = document.getElementById('ball');
   bar = document.getElementById('bar');
@@ -38,6 +46,7 @@ function inicializar(){
   spawnPoints();
 }
 
+//Spawna os pontos
 function spawnPoints(){
   for (var i = 1; i <= 15; i++) {
     for(var j = 1; j <= 6; j++){
@@ -55,6 +64,8 @@ function spawnPoints(){
   }
 }
 
+
+//Spawna a bola
 function spawnBall(){
   ball.style.visibility = 'visible';
   ball.style.left = '50%';
@@ -67,6 +78,8 @@ function spawnBall(){
   handler = setInterval(ballMove, 33);
 }
 
+
+//Recomeça o jogo
 function restart(){
   if(!game){
     gameover.style.visibility = 'hidden';
@@ -76,6 +89,7 @@ function restart(){
   }
 }
 
+//Movimento da bola
 function ballMove(){
   if(forca > 0){
     ballOffsetTop -= bVelocidade;
@@ -117,6 +131,7 @@ function ballMove(){
   ball.style.left = ballOffsetLeft + "px";
 }
 
+//Move a barra pra esquerda
 function esquerda(){
   if(barOffsetLeft + velocidade > 5){
     barOffsetLeft -= velocidade;
@@ -124,6 +139,7 @@ function esquerda(){
   }
 }
 
+//Move a barra pra direita
 function direita(){
   if(barOffsetLeft + 90 + velocidade <= 895){
     barOffsetLeft += velocidade;
