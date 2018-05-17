@@ -1,0 +1,46 @@
+.Menu{
+  margin: 0 auto;
+  margin-top: 50px;
+  width: 80%;
+  height: 500px;
+  border: 2px solid;
+  text-align: center;
+}
+
+.Menu a {
+  padding: 20px;
+  font-size: 50px;
+  line-height: 300px;
+  text-decoration: none;
+  color: black;
+  border: 2px solid;
+  border-radius: 20px;
+}
+
+.Menu a:hover{
+  background-color: rgb(0,0,0, 0.1)
+}
+
+.Level {
+  font-size: 25px;
+  margin: 0 auto;
+  margin-top: 20px;
+  height: 60px;
+  width: 40%;
+  border: 2px solid;
+  border-radius: 10px;
+  text-align: center;
+  line-height: 60px;
+}
+
+dificulty{
+  border: 10px;
+  border-radius: 10px;
+  padding: 15px;
+  color: blue;
+}
+
+dificulty:hover{
+  cursor: pointer;
+  background-color: rgb(0,0,0, 0.1);
+}
