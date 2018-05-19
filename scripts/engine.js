@@ -12,11 +12,29 @@ document.addEventListener('keydown', function(evento){
   }
 });
 
+//Classe Ball
+function Ball(x, y, ball){
+  this.x = x;
+  this.y = y;
+  this.ball = ball;
+}
+
+//Classe Point
+function Point(x, y, point){
+  this.x = x;
+  this.y = y;
+  this.point = point;
+}
+
+//Classe Bar
+function Bar(x, bar){
+  this.x = x;
+  this.bar = bar;
+}
 
 //Variaveis
-var tFrame = 900;
-var frameDiv;
-var points = new Array(78);
+var points = [];
+var frame;
 var forca;
 var inclinacao = 0;
 var bVelocidade = 10;
@@ -24,42 +42,40 @@ var velocidade = 5;
 var handler;
 var ball;
 var bar;
-var barOffsetLeft;
-var ballOffsetTop;
-var ballOffsetLeft;
 var gameover;
 var game;
 
 
 //Função de inicialização
 function inicializar(){
-  ball = document.getElementById('ball');
-  bar = document.getElementById('bar');
+  var vball = document.getElementById('ball');
+  var vbar = document.getElementById('bar');
+  ball = new Ball(vball.offsetLeft, vball.offsetTop, vball);
+  bar = new Bar(vbar.offsetLeft, vbar);
   gameover = document.getElementById('Gameover');
-  frameDiv = document.getElementById('Frame');
-  barOffsetLeft = bar.offsetLeft;
-  ballOffsetTop = ball.offsetTop;
-  ballOffsetLeft = ball.offsetLeft;
-  handler = setInterval(ballMove, 33);
+  frame = document.getElementById('Frame');
   forca = 0;
   game = true;
   spawnPoints();
+  handler = setInterval(ballMove, 30);
 }
 
 //Spawna os pontos
 function spawnPoints(){
-  for (var i = 1; i <= 15; i++) {
-    for(var j = 1; j <= 6; j++){
-      console.log("DIV " + i + " " + j);
+  var a = 0;
+  for (var i = 0; i < 15; i++) {
+    for(var j = 0; j < 6; j++){
       var point = document.createElement('div');
       point.className = 'Point';
       var color = 'rgb(' + Math.floor(Math.random() * 255) + 1 + ', ' + Math.floor(Math.random() * 255) + 1 + ',' + Math.floor(Math.random() * 255)  + 1 + ')';
       point.style.backgroundColor = color;
-      point.style.left = 60 * (i - 1) + 5  + 'px';
-      point.style.top = 30 * (j - 1) + 5 + 'px';
-      console.log("POS" + point.offsetLeft + " " + point.offsetTop);
-      points[i] = point;
-      frameDiv.appendChild(point);
+      var x = 60 * i + 5;
+      var y = 30 * j + 5;
+      point.style.left = x + 'px';
+      point.style.top = y + 'px';
+      points[a] = new Point(x, y, point);
+      frame.appendChild(point);
+      a++;
     }
   }
 }
@@ -67,15 +83,17 @@ function spawnPoints(){
 
 //Spawna a bola
 function spawnBall(){
-  ball.style.visibility = 'visible';
-  ball.style.left = '50%';
-  ball.style.top = '50%';
-  bar.style.left = '360px';
-  barOffsetLeft = bar.offsetLeft;
-  ballOffsetTop = ball.offsetTop;
-  ballOffsetLeft = ball.offsetLeft;
+  ball.ball.style.visibility = 'visible';
+  ball.ball.style.left = '50%';
+  ball.ball.style.top = '50%';
+  bar.bar.style.left = '360px';
+  bar.x = 360;
+  ball.x = 450
+  ball.y = 300;
   inclinacao = 0;
-  handler = setInterval(ballMove, 33);
+  forca = 0;
+  handler = setInterval(ballMove, 30);
+  console.log("Bola spawnada");
 }
 
 
@@ -85,74 +103,69 @@ function restart(){
     gameover.style.visibility = 'hidden';
     spawnBall();
     game = true;
-    forca = 0;
+    console.log("Reiniciando");
   }
 }
 
 //Movimento da bola
 function ballMove(){
   if(forca > 0){
-    ballOffsetTop -= bVelocidade;
+    ball.y -= bVelocidade;
     forca--;
+    console.log("Subindo");
     if(inclinacao != 0){
-      ballOffsetLeft += inclinacao;
+      ball.x += inclinacao;
     }
   }else if(forca == 0){
-    ballOffsetTop += bVelocidade;
+    console.log("Descendo");
+    ball.y += bVelocidade;
     if(inclinacao != 0){
-      ballOffsetLeft += inclinacao;
+      ball.x += inclinacao;
     }
   }
-  if(ballOffsetTop == 550 && (ballOffsetLeft >= barOffsetLeft - 10 && ballOffsetLeft <= barOffsetLeft + 100) ){
+  if(ball.y == 550 && (ball.x >= bar.x - 10 && ball.x <= bar.x + 100) ){
     forca = 500;
-    inclinacao = ((ballOffsetLeft - barOffsetLeft) - 45)/10;
+    inclinacao = ((ball.x - bar.x) - 45)/10;
   }
-  if((ballOffsetLeft >= 0 && ballOffsetLeft <= 10) || (ballOffsetLeft >= 870 && ballOffsetLeft <= 880)){
+  if((ball.x >= 0 && ball.x <= 10) || (ball.x >= 870 && ball.x <= 880)){
     inclinacao = inclinacao * -1;
   }
-  if(ballOffsetTop == 0){
+  if(ball.y == 0){
     forca = 0;
   }
-  if(ballOffsetTop <= 810 && (ballOffsetLeft >= 50 && ballOffsetLeft < 850) ){
-    var point = getPoint(ballOffsetLeft, ballOffsetTop);
-    if(point != null){
-      point.style.visible = 'hidden';
-      forca = 0;
-    }
-  }
 
-  if(ballOffsetTop + 20 == 600){
+  if(ball.y + 20 == 600){
     clearInterval(handler);
-    ball.style.visibility = 'hidden';
+    ball.ball.style.visibility = 'hidden';
     gameover.style.visibility = 'visible';
     game = false;
   }
-  ball.style.top = ballOffsetTop + 'px';
-  ball.style.left = ballOffsetLeft + "px";
+  ball.ball.style.top = ball.y + 'px';
+  ball.ball.style.left = ball.x + "px";
 }
 
 //Move a barra pra esquerda
 function esquerda(){
-  if(barOffsetLeft + velocidade > 5){
-    barOffsetLeft -= velocidade;
-    bar.style.left = (barOffsetLeft) + 'px';
+  if(bar.x + velocidade > 5){
+    bar.x -= velocidade;
+    bar.bar.style.left = (bar.x) + 'px';
   }
 }
 
 //Move a barra pra direita
 function direita(){
-  if(barOffsetLeft + 90 + velocidade <= 895){
-    barOffsetLeft += velocidade;
-    bar.style.left = (barOffsetLeft) + 'px';
+  if(bar.x + 90 + velocidade <= 895){
+    bar.x += velocidade;
+    bar.bar.style.left = (bar.x) + 'px';
   }
 }
 
 function getPoint(x, y){
   console.log("Procurando ponto entre " + x + " e " + y);
   for (var p in points) {
-    if ((p.offsetLeft <= x && p.offsetLeft + 50 >= x) && y == p.offsetTop + 20 && p.style.visibility != 'hidden') {
+    if ((p.x <= x && p.x + 50 >= x) && y == p.y + 20 && p.style.visibility != 'hidden') {
       return p;
-      console.log("Foi achado um em " + p.offsetLeft + " e " + p.offsetTop);
+      console.log("Foi achado um em " + p.x + " e " + p.y);
       break;
     }
   }
