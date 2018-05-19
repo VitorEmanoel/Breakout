@@ -20,9 +20,9 @@ function Ball(x, y, ball){
 }
 
 //Classe Point
-function Point(x, y, point){
-  this.x = x;
-  this.y = y;
+function Ponto(ax, ay, point){
+  this.x = ax;
+  this.y = ay;
   this.point = point;
 }
 
@@ -33,12 +33,14 @@ function Bar(x, bar){
 }
 
 //Variaveis
-var points = [];
+var placar;
+var pontos = 0;
+var points = new Array();
 var frame;
 var forca;
 var inclinacao = 0;
 var bVelocidade = 10;
-var velocidade = 5;
+var velocidade = 10;
 var handler;
 var ball;
 var bar;
@@ -48,6 +50,7 @@ var game;
 
 //Função de inicialização
 function inicializar(){
+  placar = document.getElementById('placar');
   var vball = document.getElementById('ball');
   var vbar = document.getElementById('bar');
   ball = new Ball(vball.offsetLeft, vball.offsetTop, vball);
@@ -62,21 +65,19 @@ function inicializar(){
 
 //Spawna os pontos
 function spawnPoints(){
-  var a = 0;
   for (var i = 0; i < 15; i++) {
+    var colunas = new Array();
     for(var j = 0; j < 6; j++){
-      var point = document.createElement('div');
-      point.className = 'Point';
-      var color = 'rgb(' + Math.floor(Math.random() * 255) + 1 + ', ' + Math.floor(Math.random() * 255) + 1 + ',' + Math.floor(Math.random() * 255)  + 1 + ')';
-      point.style.backgroundColor = color;
-      var x = 60 * i + 5;
-      var y = 30 * j + 5;
-      point.style.left = x + 'px';
-      point.style.top = y + 'px';
-      points[a] = new Point(x, y, point);
-      frame.appendChild(point);
-      a++;
+      var point = new Ponto(60 * i + 5, 30 * j + 5, document.createElement('div'));
+      point.point.className = 'Point';
+      var color = 'rgb(' + Math.floor(Math.random() * 255) + ', ' + Math.floor(Math.random() * 255) + ',' + Math.floor(Math.random() * 255) + ')';
+      point.point.style.backgroundColor = color;
+      point.point.style.left = point.x + 'px';
+      point.point.style.top = point.y + 'px';
+      colunas[j] = point;
+      frame.appendChild(point.point);
     }
+    points[i] = colunas;
   }
 }
 
@@ -93,7 +94,6 @@ function spawnBall(){
   inclinacao = 0;
   forca = 0;
   handler = setInterval(ballMove, 30);
-  console.log("Bola spawnada");
 }
 
 
@@ -103,7 +103,15 @@ function restart(){
     gameover.style.visibility = 'hidden';
     spawnBall();
     game = true;
-    console.log("Reiniciando");
+    pontos = 0;
+    placar.innerHTML = "Pontos: " + pontos;
+    for(var i = 0; i < 15; i++){
+      for(var j = 0; j < 6; j++){
+        var color = 'rgb(' + Math.floor(Math.random() * 255) + ', ' + Math.floor(Math.random() * 255) + ',' + Math.floor(Math.random() * 255) + ')';
+        points[i][j].point.style.visibility = 'visible';
+        points[i][j].point.style.backgroundColor = color;
+      }
+    }
   }
 }
 
@@ -112,12 +120,10 @@ function ballMove(){
   if(forca > 0){
     ball.y -= bVelocidade;
     forca--;
-    console.log("Subindo");
     if(inclinacao != 0){
       ball.x += inclinacao;
     }
   }else if(forca == 0){
-    console.log("Descendo");
     ball.y += bVelocidade;
     if(inclinacao != 0){
       ball.x += inclinacao;
@@ -132,6 +138,15 @@ function ballMove(){
   }
   if(ball.y == 0){
     forca = 0;
+  }
+  if(ball.y <= 175){
+    var point = getPoint(ball.x + 10, ball.y);
+    if(point.point.style.visibility != 'hidden'){
+      point.point.style.visibility = 'hidden';
+      forca = 0;
+      pontos++;
+      placar.innerHTML = "Pontos: " + pontos;
+    }
   }
 
   if(ball.y + 20 == 600){
@@ -161,13 +176,7 @@ function direita(){
 }
 
 function getPoint(x, y){
-  console.log("Procurando ponto entre " + x + " e " + y);
-  for (var p in points) {
-    if ((p.x <= x && p.x + 50 >= x) && y == p.y + 20 && p.style.visibility != 'hidden') {
-      return p;
-      console.log("Foi achado um em " + p.x + " e " + p.y);
-      break;
-    }
-  }
-  console.log("Não foi achado nada");
+  var i = Math.floor(15 - ((900 - x)/60));
+  var j = Math.floor(6 - ((175 - y)/30));
+  return points[i][j];
 }

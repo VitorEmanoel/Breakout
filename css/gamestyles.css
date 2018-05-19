@@ -1,5 +1,6 @@
 body{
   background-color: black;
+  display: flex;
 }
 
 #Frame{
@@ -16,6 +17,12 @@ body{
   width: 50px;
   height: 20px;
   border-radius: 5px;
+}
+
+#placar{
+  color: white;
+  text-align: center;
+  font-size: 30px;
 }
 
 #Gameover{
