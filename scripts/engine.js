@@ -20,7 +20,7 @@ function Ball(x, y, ball){
 }
 
 //Classe Point
-function Ponto(ax, ay, point){
+function Point(ax, ay, point){
   this.x = ax;
   this.y = ay;
   this.point = point;
@@ -59,6 +59,7 @@ function inicializar(){
   frame = document.getElementById('Frame');
   forca = 0;
   game = true;
+  restante = 15 * 6;
   spawnPoints();
   handler = setInterval(ballMove, 30);
 }
@@ -68,7 +69,7 @@ function spawnPoints(){
   for (var i = 0; i < 15; i++) {
     var colunas = new Array();
     for(var j = 0; j < 6; j++){
-      var point = new Ponto(60 * i + 5, 30 * j + 5, document.createElement('div'));
+      var point = new Point(60 * i + 5, 30 * j + 5, document.createElement('div'));
       point.point.className = 'Point';
       var color = 'rgb(' + Math.floor(Math.random() * 255) + ', ' + Math.floor(Math.random() * 255) + ',' + Math.floor(Math.random() * 255) + ')';
       point.point.style.backgroundColor = color;
@@ -146,6 +147,9 @@ function ballMove(){
       forca = 0;
       pontos++;
       placar.innerHTML = "Pontos: " + pontos;
+      if(pontos == 90){
+
+      }
     }
   }
 
